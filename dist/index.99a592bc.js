@@ -578,7 +578,6 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 var _imgs = require("./imgs");
 var _imgsDefault = parcelHelpers.interopDefault(_imgs);
 var _leaflet = require("leaflet");
-var _leafletCss = require("leaflet/dist/leaflet.css");
 "use strict";
 const form = document.querySelector(".form");
 const containerWorkouts = document.querySelector(".workouts");
@@ -1054,7 +1053,7 @@ class App {
 // }
 const myApp = new App();
 
-},{"./imgs":"8Mkdo","leaflet":"iFbO2","leaflet/dist/leaflet.css":"6JhOO","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"8Mkdo":[function(require,module,exports) {
+},{"./imgs":"8Mkdo","leaflet":"iFbO2","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"8Mkdo":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _closeIconPng = require("../IMGS/closeIcon.png");
@@ -11740,6 +11739,6 @@ exports.export = function(dest, destName, get) {
     window.L = exports1;
 });
 
-},{}],"6JhOO":[function() {},{}]},["4Th3I","4I5Dy"], "4I5Dy", "parcelRequire7e89")
+},{}]},["4Th3I","4I5Dy"], "4I5Dy", "parcelRequire7e89")
 
 //# sourceMappingURL=index.99a592bc.js.map

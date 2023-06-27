@@ -2,8 +2,6 @@
 
 import imgs from './imgs';
 import * as L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-
 
 const form = document.querySelector('.form');
 const containerWorkouts = document.querySelector('.workouts');
@@ -14,7 +12,6 @@ const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 const sidebar = document.querySelector('.sidebar');
 
-
 class Workout {
   id = this._idMaker().slice(-9);
 
@@ -24,7 +21,6 @@ class Workout {
     this.coords = coords;
   }
 
-  
   _idMaker() {
     const date = new Date();
     this.date = date;
@@ -93,7 +89,7 @@ class App {
 
     containerWorkouts.addEventListener('click', this._moveMap.bind(this));
 
-    sidebar.addEventListener('click', x => {
+    sidebar.addEventListener('click', (x) => {
       if (x.target.closest('form') == form) return;
       form.classList.add('hidden');
     });
@@ -102,14 +98,14 @@ class App {
   _getPosiion() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        x => {
+        (x) => {
           const { latitude, longitude } = x.coords;
           this._cordinates = [latitude, longitude];
           this._loadMap(this._cordinates);
         },
         function () {
           alert(`couldn't find the location`);
-        }
+        },
       );
     }
   }
@@ -127,11 +123,13 @@ class App {
     document.addEventListener('click', this._removeWorkout.bind(this));
   }
   _removeWorkout(x) {
-    if (!x.target.classList.contains('remove')) return
+    if (!x.target.classList.contains('remove')) return;
     const Id = x.target.closest('.workout').dataset.id;
 
-    const obj = this.#WorkoutList.find(workout => workout.id === Id);
-    const objindex = this.#WorkoutList.findIndex(workout => workout.id === Id);
+    const obj = this.#WorkoutList.find((workout) => workout.id === Id);
+    const objindex = this.#WorkoutList.findIndex(
+      (workout) => workout.id === Id,
+    );
     this.#WorkoutList.splice(objindex, 1);
 
     console.log(objindex);
@@ -140,17 +138,17 @@ class App {
 
     this._saveToStorage(this.#WorkoutList);
 
-     const parentElement = document.querySelector('.workouts');
+    const parentElement = document.querySelector('.workouts');
 
-     const childElements = parentElement.children;
+    const childElements = parentElement.children;
 
-     for (let i = childElements.length - 1; i > 0; i--) {
-       parentElement.removeChild(childElements[i]);
-     }
-     this.#WorkoutList = [];
+    for (let i = childElements.length - 1; i > 0; i--) {
+      parentElement.removeChild(childElements[i]);
+    }
+    this.#WorkoutList = [];
 
-     this._removeWorkoutMarkers();
-     this._getFromStorage();
+    this._removeWorkoutMarkers();
+    this._getFromStorage();
   }
   _openfrom(mapE) {
     this._hideAllEdform();
@@ -241,13 +239,13 @@ class App {
   }
 
   _validInput(...values) {
-    return values.every(val => {
+    return values.every((val) => {
       return Number.isFinite(Number(val));
     });
   }
 
   _allPositive(...values) {
-    return values.every(val => {
+    return values.every((val) => {
       return Number(val) > 0;
     });
   }
@@ -263,7 +261,7 @@ class App {
           closeOnClick: false,
           content: `${workout._createContent()}`,
           className: `${workout.type}-popup`,
-        })
+        }),
       )
       .openPopup();
   }
@@ -275,15 +273,15 @@ class App {
     const markers = document.querySelectorAll('.leaflet-marker-icon');
     const leafletShadowpane = document.querySelector('.leaflet-shadow-pane');
     const shadows = document.querySelectorAll('.leaflet-marker-shadow');
-    popups.forEach(popup => {
+    popups.forEach((popup) => {
       leafletPopUpPane.removeChild(popup);
     });
 
-    markers.forEach(marker => {
+    markers.forEach((marker) => {
       leafletMarkerPane.removeChild(marker);
     });
 
-    shadows.forEach(shadow => {
+    shadows.forEach((shadow) => {
       leafletShadowpane.removeChild(shadow);
     });
   }
@@ -318,7 +316,7 @@ class App {
       <div class="workout__details">
         <span class="workout__icon">⚡️</span>
         <span class="workout__value pace-value">${workout.pace.toFixed(
-          1
+          1,
         )}</span>
         <span class="workout__unit">min/km</span>
       </div>
@@ -355,7 +353,7 @@ class App {
       <div class="workout__details">
         <span class="workout__icon">⚡️</span>
         <span class="workout__value speed-value">${workout.speed.toFixed(
-          1
+          1,
         )}</span>
         <span class="workout__unit">km/h</span>
       </div>
@@ -418,7 +416,7 @@ class App {
     if (x.target.classList.contains('edit')) {
       const parent = x.target.closest('.workout');
       parent.querySelector('.Edfrom').classList.remove('hiddenn');
-      parent.querySelectorAll('.workout__details').forEach(x => {
+      parent.querySelectorAll('.workout__details').forEach((x) => {
         x.classList.add('hiddenn');
       });
     }
@@ -427,15 +425,15 @@ class App {
   _hideEdform(x) {
     const parent = x.target.closest('.workout');
     parent.querySelector('.Edfrom').classList.add('hiddenn');
-    parent.querySelectorAll('.workout__details').forEach(x => {
+    parent.querySelectorAll('.workout__details').forEach((x) => {
       x.classList.remove('hiddenn');
     });
   }
 
   _hideAllEdform() {
-    document.querySelectorAll('.workout').forEach(x => {
+    document.querySelectorAll('.workout').forEach((x) => {
       x.querySelector('.Edfrom').classList.add('hiddenn');
-      x.querySelectorAll('.workout__details').forEach(y => {
+      x.querySelectorAll('.workout__details').forEach((y) => {
         y.classList.remove('hiddenn');
       });
     });
@@ -444,9 +442,11 @@ class App {
   _setDatasToEdFrom() {
     const forms = document.querySelectorAll('.Edfrom');
 
-    forms.forEach(x => {
+    forms.forEach((x) => {
       const workout = x.closest('.workout');
-      let workoutObj = this.#WorkoutList.find(x => x.id === workout.dataset.id);
+      let workoutObj = this.#WorkoutList.find(
+        (x) => x.id === workout.dataset.id,
+      );
 
       let distance = x.querySelector('.form__input--distance');
       let duration = x.querySelector('.form__input--duration');
@@ -467,7 +467,7 @@ class App {
     const edFrom = x.target.closest('.Edfrom');
     const workout = edFrom.closest('.workout');
     const select = x.target.closest('.workout').querySelector('.edit-select');
-    let workoutObj = this.#WorkoutList.find(x => x.id === workout.dataset.id);
+    let workoutObj = this.#WorkoutList.find((x) => x.id === workout.dataset.id);
 
     const workoutDistance = workout.querySelector('.distance-value');
     const workoutDuration = workout.querySelector('.duration-value');
@@ -510,19 +510,19 @@ class App {
     const workout = select.closest('.workout');
     const workoutId = workout.dataset.id;
 
-    const workObj = this.#WorkoutList.find(workout => {
+    const workObj = this.#WorkoutList.find((workout) => {
       return workout.id === workoutId;
     });
 
     const index = this.#WorkoutList.findIndex(
-      workout => Number(workout.id) === Number(workoutId)
+      (workout) => Number(workout.id) === Number(workoutId),
     );
     if (select.value === 'cycling') {
       const changeToCyclig = new Cycling(
         distance.value,
         duration.value,
         workObj.coords,
-        elevation.value
+        elevation.value,
       );
       changeToCyclig.id = workObj.id;
       changeToCyclig.date = workObj.date;
@@ -534,7 +534,7 @@ class App {
         distance.value,
         duration.value,
         workObj.coords,
-        cadence.value
+        cadence.value,
       );
 
       changeToRunning.id = workObj.id;
@@ -561,7 +561,7 @@ class App {
     const workoutEl = event.target.closest('.workout');
     if (!workoutEl) return;
     const data = workoutEl.dataset.id;
-    const obj = this.#WorkoutList.find(obj => obj.id === data);
+    const obj = this.#WorkoutList.find((obj) => obj.id === data);
     this.#map.setView(obj.coords, 15, {
       animate: true,
       pan: {
@@ -581,14 +581,14 @@ class App {
     if (datas == undefined) return;
 
     // this.#WorkoutList = [];
-    datas.forEach(data => {
+    datas.forEach((data) => {
       let obj;
       if (data.type === 'running') {
         obj = new Running(
           data.distance,
           data.duration,
           data.coords,
-          data.cadance
+          data.cadance,
         );
 
         obj.date = new Date(data.date);
@@ -602,7 +602,7 @@ class App {
           data.distance,
           data.duration,
           data.coords,
-          data.elvgain
+          data.elvgain,
         );
 
         obj.date = new Date(data.date);
