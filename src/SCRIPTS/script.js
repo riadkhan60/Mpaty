@@ -12,6 +12,8 @@ const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 const sidebar = document.querySelector('.sidebar');
 
+
+// Workout Class for creating new Workout
 class Workout {
   id = this._idMaker().slice(-9);
 
@@ -80,12 +82,13 @@ class App {
   #mapE;
   constructor() {
     this._getPosiion();
+    
+    form.addEventListener('submit', this._newWorkOut.bind(this));
 
     document.addEventListener('click', this._submitForm.bind(this));
 
     inputType.addEventListener('change', this._toggleElevationField);
 
-    form.addEventListener('submit', this._newWorkOut.bind(this));
 
     containerWorkouts.addEventListener('click', this._moveMap.bind(this));
 
@@ -101,7 +104,7 @@ class App {
         (x) => {
           const { latitude, longitude } = x.coords;
           this._cordinates = [latitude, longitude];
-          this._loadMap(this._cordinates);
+          this._loadMap();
         },
         function () {
           alert(`couldn't find the location`);
@@ -110,18 +113,20 @@ class App {
     }
   }
 
-  _loadMap(coords) {
+  _loadMap() {
     this.#map = L.map('map').setView(this._cordinates, 15);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(this.#map);
 
+    // click on the map to display the form
     this.#map.on('click', this._openfrom.bind(this));
     this._getFromStorage();
-    document.addEventListener('click', this._revealFrom.bind(this));
+    document.addEventListener('click', this._revealEditForm.bind(this));
     document.addEventListener('click', this._removeWorkout.bind(this));
   }
+
   _removeWorkout(x) {
     if (!x.target.classList.contains('remove')) return;
     const Id = x.target.closest('.workout').dataset.id;
@@ -150,13 +155,18 @@ class App {
     this._removeWorkoutMarkers();
     this._getFromStorage();
   }
+
+
   _openfrom(mapE) {
+    // hide all the existing workout lists' editing states.
     this._hideAllEdform();
-    document.removeEventListener('change', this._toggleElevationFieldEdit);
+
+    // remove the toggle event handler of workout editing  
+    // document.removeEventListener('change', this._toggleElevationFieldEdit);
     this.#mapE = mapE;
     form.classList.remove('hidden');
     inputDistance.focus();
-    document.addEventListener('change', this._toggleElevationFieldEdit);
+    // document.addEventListener('change', this._toggleElevationFieldEdit);
   }
 
   _toggleElevationField(e) {
@@ -186,7 +196,7 @@ class App {
   _newWorkOut(e) {
     e.preventDefault();
 
-    document.removeEventListener('change', this._toggleElevationFieldEdit);
+    // document.removeEventListener('change', this._toggleElevationFieldEdit);
     let { lat, lng } = this.#mapE.latlng;
 
     const distance = inputDistance.value;
@@ -220,7 +230,7 @@ class App {
     this._renderWorkoutlist(workout);
     this._hideform();
 
-    document.addEventListener('change', this._toggleElevationFieldEdit);
+    // document.addEventListener('change', this._toggleElevationFieldEdit);
 
     this._saveToStorage(this.#WorkoutList);
   }
@@ -412,7 +422,7 @@ class App {
     this._setDatasToEdFrom();
   }
 
-  _revealFrom(x) {
+  _revealEditForm(x) {
     if (x.target.classList.contains('edit')) {
       const parent = x.target.closest('.workout');
       parent.querySelector('.Edfrom').classList.remove('hiddenn');
@@ -430,6 +440,7 @@ class App {
     });
   }
 
+  // A function to remove all the 
   _hideAllEdform() {
     document.querySelectorAll('.workout').forEach((x) => {
       x.querySelector('.Edfrom').classList.add('hiddenn');
@@ -463,6 +474,7 @@ class App {
 
   _submitForm(x) {
     if (!x.target.classList.contains('save')) return;
+  
 
     const edFrom = x.target.closest('.Edfrom');
     const workout = edFrom.closest('.workout');
@@ -483,6 +495,11 @@ class App {
     let duration = edFrom.querySelector('.form__input--duration');
     let cadence = edFrom.querySelector('.form__input--cadence');
     let elevation = edFrom.querySelector('.form__input--elevation');
+
+    if (!this._validInput(distance.value, duration.value, cadence.value, elevation.value) || this._allPositive(!distance.value, duration.value, cadence.value)) {
+      alert('Please input the right data');
+      return
+    } 
 
     if (select.value === workoutObj.type) {
       workoutObj.distance = workoutDistance.innerText = Number(distance.value);
